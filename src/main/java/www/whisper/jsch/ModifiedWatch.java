@@ -1,6 +1,5 @@
 package www.whisper.jsch;
 
-import org.apache.commons.collections4.ListUtils;
 
 import java.io.File;
 import java.nio.file.*;
@@ -21,6 +20,7 @@ public class ModifiedWatch {
             WatchService watchService = FileSystems.getDefault().newWatchService();
             // 只监听文件修改
             path.register(watchService, StandardWatchEventKinds.ENTRY_MODIFY);
+            // 应该做个间隔轮询
             while (true) {
                 WatchKey watchKey = watchService.take();
                 for (WatchEvent event : watchKey.pollEvents()) {
@@ -28,12 +28,13 @@ public class ModifiedWatch {
                         continue;
                     }
                     File parent = path.toFile();
-                    File[] files = parent.listFiles();
+                    File[] files = parent.listFiles(File::isFile);
                     if (files == null) {
                         continue;
                     }
                     for (File file : files) {
                         // 处理
+                        SFTPUtil.upload(jschSFTP, directory, file.getAbsolutePath());
                     }
                 }
             }

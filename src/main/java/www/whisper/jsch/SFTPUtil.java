@@ -78,9 +78,6 @@ public class SFTPUtil {
             in.close();
         } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            // 关闭连接
-            disConnect(jschSFTP);
         }
     }
 
@@ -104,9 +101,6 @@ public class SFTPUtil {
              out.close();
          } catch (Exception e) {
              e.printStackTrace();
-         } finally {
-             // 关闭连接
-             disConnect(jschSFTP);
          }
      }
 }

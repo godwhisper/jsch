@@ -1,6 +1,5 @@
 package www.whisper.jsch;
 
-import com.jcraft.jsch.Channel;
 import com.jcraft.jsch.ChannelSftp;
 import com.jcraft.jsch.Session;
 
