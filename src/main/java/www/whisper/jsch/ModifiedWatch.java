@@ -3,6 +3,7 @@ package www.whisper.jsch;
 
 import java.io.File;
 import java.nio.file.*;
+import java.util.Date;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -15,11 +16,12 @@ import java.util.concurrent.TimeUnit;
 public class ModifiedWatch {
     /**
      * 监听目录文件变化，并上传
-     * @param directory 待监听目录
+     * @param listenDirectory 待监听目录
+     * @param directory 上传目录
      * @param jschSFTP sftp连接管理对象
      */
-    public static void watch(String directory, JschSFTP jschSFTP) {
-        Path path = Paths.get(directory);
+    public static void watch(String listenDirectory, String directory, JschSFTP jschSFTP) {
+        Path path = Paths.get(listenDirectory);
         try {
             WatchService watchService = FileSystems.getDefault().newWatchService();
             // 只监听文件修改
@@ -41,8 +43,10 @@ public class ModifiedWatch {
                         for (File file : files) {
                             // 处理
                             SFTPUtil.upload(jschSFTP, directory, file.getAbsolutePath());
+                            System.out.println("file change at：" + new Date().toString() + " of " + file.getName());
                         }
                     }
+                    watchKey.reset();
                     watchKey = watchService.poll();
                 }
             }, 0, 5, TimeUnit.SECONDS);
